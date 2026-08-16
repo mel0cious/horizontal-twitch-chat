@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mkody/twitch-emoticons": "^3.0.0-beta.8",
     "@twurple/api": "^8.1.4",
     "@twurple/auth": "^8.1.4",
     "@twurple/chat": "^8.1.4",

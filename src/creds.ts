@@ -1,2 +1,2 @@
-export const clientId = 'l91s8g8g9f92scg8rq013i6g3srmgw';
-export const accessToken = '';
+export const clientId = 'xyr4n8p60dbo9xt47i38m0qltu1p4g';
+export const accessToken = 'wfrgido3ajtyfsjfdf2cah6peouqag';

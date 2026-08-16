@@ -3,7 +3,7 @@ import { getNewChatClient } from "./chat";
 import { BrowserRouter, useLocation, useParams, useSearchParams } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import MessageFull from "./MessageFull";
-
+import './index.css'
 export type CompressedChatMessage = {
   channel: string,
   user: string,
@@ -61,7 +61,7 @@ function App() {
   return (
     <>
       <div className="all-messages-container">
-        <h1>Connected to {channel}</h1>
+        <b className="message-container">Connected to {channel}. </b>
         {
           messageArray.map(
             (message, index) => {
