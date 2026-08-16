@@ -82,7 +82,8 @@ function App() {
       <style>
         {`
           .twitch-emote {
-            fontSize: ${getDefaultFontSize(searchParams)}
+            fontSize: ${getDefaultFontSize(searchParams)};
+            margin-right: 5px;
           }
         `}
       </style>
