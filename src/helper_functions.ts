@@ -13,7 +13,9 @@ export function getDefaultFontColor(sp : URLSearchParams) : string {
 }
 
 export function getDefaultFontSize(sp : URLSearchParams) : number {
-    return parseInt(sp.get("FontSize")!) ?? 36
+    const size = parseInt(sp.get("FontSize")!) 
+    if (Number.isNaN(size)) return 32
+    else return size
 }
 
 export function getChannel(sp : URLSearchParams) : string {
