@@ -3,6 +3,7 @@ import type { CompressedChatMessage } from "./App";
 import MessageHeader from "./MessageHeader";
 import { emoteFetcher, emoteParser } from "./auth";
 import { useEffect } from "react";
+import MessageBody from "./MessageBody";
 
 interface MessageProps {
     chat_message: CompressedChatMessage,
@@ -19,7 +20,7 @@ export default function MessageFull({chat_message, prev_message_from_same_chatte
             ? <></>
             : <MessageHeader cm={chat_message} sp={search_params}/> 
         }
-        <div className="message-body">{chat_message.text} </div>
+        <MessageBody cm={chat_message} sp={search_params}/>
         
     </div>
     )

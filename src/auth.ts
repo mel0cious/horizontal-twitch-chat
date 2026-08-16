@@ -8,4 +8,4 @@ export const TWITCH_API = new ApiClient({authProvider})
 export const emoteFetcher = new EmoteFetcher({
   apiClient: TWITCH_API,
 })
-export const emoteParser = new EmoteParser(emoteFetcher)
+export const emoteParser = new EmoteParser(emoteFetcher, {type: "html"})

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
 import { getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
+import { emoteFetcher } from "./auth";
 export type CompressedChatMessage = {
   channel: string,
   user: string,
@@ -19,12 +20,8 @@ function App() {
   const [messageArray, setMessageArray] = useState<CompressedChatMessage[]>([])
   const channelRef = useRef<string>("")
   const [channel, setChannel] = useState<string>("")
-  
-
-
-
   const MAIN_CHAT_CLIENT = getNewChatClient(channel)
-  const ALWAYS_TRUE = true
+  const channelIDRef = useRef<number>(0)
 
   useEffect(() => {
     const myChannel = getChannel(searchParams)
@@ -44,12 +41,32 @@ function App() {
   }
 
   useEffect(() => {
+
+        if (channelIDRef.current == 0) {}
+        else {
+          // Global Emotes
+          emoteFetcher.fetchTwitchEmotes()
+          emoteFetcher.fetchFFZEmotes()
+          emoteFetcher.fetchBTTVEmotes()
+          emoteFetcher.fetchSevenTVEmotes()
+          // Chhannel Emotes
+          emoteFetcher.fetchTwitchEmotes(channelIDRef.current)
+          emoteFetcher.fetchFFZEmotes(channelIDRef.current)
+          emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
+          emoteFetcher.fetchSevenTVEmotes(channelIDRef.current)
+        }
+    }, [channelIDRef.current])
+
+  useEffect(() => {
     if (!channel || channel === "ERROR_NO_CHANNEL_SET") return;
     
     MAIN_CHAT_CLIENT.connect()
     MAIN_CHAT_CLIENT.onMessage((channel: string, user: string, text: string, msg: ChatMessage) => {
       const cm: CompressedChatMessage = { channel, user, text, msg }
-      console.log(check_if_prev_same_usr(user))
+      const channelID = parseInt(msg.channelId!)
+      if (channelIDRef.current == channelID) {}
+      else channelIDRef.current = channelID
+
       checkedPrevUser.current.push(check_if_prev_same_usr(user))
       messageRefArray.current.push(cm)
       setMessageArray(oldArray => [...oldArray, cm])
@@ -61,6 +78,15 @@ function App() {
 
   return (
     <>
+
+      <style>
+        {`
+          .twitch-emote {
+            fontSize: ${getDefaultFontSize(searchParams)}
+          }
+        `}
+      </style>
+
       <div className="all-messages-container" style={{fontFamily: getDefaultFont(searchParams), color: getDefaultFontColor(searchParams), fontSize: getDefaultFontSize(searchParams)}}>
         <b className="message-container">Connected to {channel}. </b>
         {

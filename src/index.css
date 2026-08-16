@@ -17,6 +17,10 @@
     justify-content: flex-end;
 }
 
+.message-body {
+    margin: 0
+}
+
 .message-container {
     white-space: nowrap;
     overflow: hidden;

@@ -9,8 +9,8 @@ export default function MessageHeader(props : {cm: CompressedChatMessage, sp: UR
     const displayName = props.cm.msg.userInfo.displayName  
     const userColor = props.cm.msg.userInfo.color ?? getDefaultUserColor(props.sp)
 
-
-    console.log(userColor)
+    console.log(props.cm.msg.userInfo.badges)
+    console.log(props.cm.msg.userInfo.badgeInfo)
 
     return (
         <>
