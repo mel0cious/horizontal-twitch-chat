@@ -3,21 +3,23 @@
     src: url(EightBitDragon-anqx.ttf);
 }
 
+@font-face {
+    font-family: Roobert;
+    src: url(Roobert.otf);
+}
+
 .all-messages-container {
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
-    height: 20px;
+    min-height: 20px;
     display: flex;
     justify-content: flex-end;
-    color: #ff9ce0;
-    font-family: EightBitDragon
 }
 
 .message-container {
     white-space: nowrap;
     overflow: hidden;
-    height: 20px;
     display: flex;
     margin-right: 5px;
     align-self: flex-end;
@@ -27,7 +29,6 @@
 .message-header-container {
     white-space: nowrap;
     overflow: hidden;
-    height: 20px;
     display: flex;
     margin-right: 5px;
 }
