@@ -1,6 +1,6 @@
-import { ChatClient, ChatMessage } from "@twurple/chat";
+import { ChatMessage } from "@twurple/chat";
 import { getNewChatClient } from "./chat";
-import { BrowserRouter, useLocation, useParams, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
@@ -14,15 +14,16 @@ export type CompressedChatMessage = {
 };
 
 function App() {
-  const [searchParams, getSearchParams] = useSearchParams()
-  const messageRefArray = useRef<CompressedChatMessage[]>([])
-  const checkedPrevUser = useRef<Boolean[]>([])
+  const [searchParams] = useSearchParams() 
+  const messageRefArray = useRef<CompressedChatMessage[]>([]) // used purely for check_if_prev_same_usr()
   const [messageArray, setMessageArray] = useState<CompressedChatMessage[]>([])
-  const channelRef = useRef<string>("")
+  const checkedPrevUser = useRef<Boolean[]>([])
   const [channel, setChannel] = useState<string>("")
-  const MAIN_CHAT_CLIENT = getNewChatClient(channel)
   const channelIDRef = useRef<number>(0)
+  const MAIN_CHAT_CLIENT = getNewChatClient(channel)
+  const channelRef = useRef<string>("")
 
+  // I hate that this is required for some reason, it really feels like it shouldn't be and I was clever but nope for some bullshit reason it is
   useEffect(() => {
     const myChannel = getChannel(searchParams)
     channelRef.current = myChannel
@@ -40,16 +41,19 @@ function App() {
     return user == last.user
   }
 
+  // Fetch Emotes
+  // Inefficient right now, there must be a better way to do this.
   useEffect(() => {
+        // Global Emotes
+        emoteFetcher.fetchTwitchEmotes()
+        emoteFetcher.fetchFFZEmotes()
+        emoteFetcher.fetchBTTVEmotes()
+        emoteFetcher.fetchSevenTVEmotes()
 
         if (channelIDRef.current == 0) {}
         else {
-          // Global Emotes
-          emoteFetcher.fetchTwitchEmotes()
-          emoteFetcher.fetchFFZEmotes()
-          emoteFetcher.fetchBTTVEmotes()
-          emoteFetcher.fetchSevenTVEmotes()
-          // Chhannel Emotes
+          // Channel Emotes
+          // i need to see if there's a way to load someone's sub emotes
           emoteFetcher.fetchTwitchEmotes(channelIDRef.current)
           emoteFetcher.fetchFFZEmotes(channelIDRef.current)
           emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
@@ -57,6 +61,8 @@ function App() {
         }
     }, [channelIDRef.current])
 
+  // twitch chat client stuff
+  // should this be a ref?
   useEffect(() => {
     if (!channel || channel === "ERROR_NO_CHANNEL_SET") return;
     
@@ -79,10 +85,10 @@ function App() {
   return (
     <>
 
-      <style>
+      <style> {/* This is needed because of the dynamic serachParams, can't put it inside of a .css file */}
         {`
           .twitch-emote {
-            fontSize: ${getDefaultFontSize(searchParams)};
+            fontSize: ${getDefaultFontSize(searchParams)}; 
             margin-right: 5px;
           }
         `}

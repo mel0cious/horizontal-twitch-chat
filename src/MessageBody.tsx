@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
 import type { CompressedChatMessage } from "./App";
-import { emoteFetcher, emoteParser } from "./auth";
-import { getDefaultFontSize } from "./helper_functions";
+import { emoteParser } from "./auth";
 //import DOMPurify from 'dompurify';
 
+interface MessageBodyProps {
+    chat_message: CompressedChatMessage
+}
 
-export default function MessageBody(props : {cm: CompressedChatMessage, sp: URLSearchParams}) {
-    const fontSize = getDefaultFontSize(props.sp)
-    const parsed = emoteParser.parse(props.cm.text);
+export default function MessageBody({chat_message} : MessageBodyProps) {
+    const parsed = emoteParser.parse(chat_message.text);
 
     console.log(parsed)
     return (
         // Dangerously Set Inner HTML, rarely should be used, but it works. I tried to execute a XSS attack but I couldn't. Maybe it's still possible, but I can't think of a better way.
+        // I was able to successfully execute a XSS attack on this. TODO: Update this
         <div dangerouslySetInnerHTML={{__html: parsed}} className="message-body"> 
             
         </div>

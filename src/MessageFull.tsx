@@ -1,9 +1,8 @@
-import type { ChatMessage } from "@twurple/chat";
 import type { CompressedChatMessage } from "./App";
 import MessageHeader from "./MessageHeader";
-import { emoteFetcher, emoteParser } from "./auth";
-import { useEffect } from "react";
 import MessageBody from "./MessageBody";
+import Pronouns from "./Pronouns";
+
 
 interface MessageProps {
     chat_message: CompressedChatMessage,
@@ -17,10 +16,10 @@ export default function MessageFull({chat_message, prev_message_from_same_chatte
     <div className="message-container">
         {
             (prev_message_from_same_chatter)
-            ? <></>
-            : <MessageHeader cm={chat_message} sp={search_params}/> 
+            ? <>{/* I liked empty better */}</> 
+            : <MessageHeader chat_message={chat_message} search_params={search_params}/> 
         }
-        <MessageBody cm={chat_message} sp={search_params}/>
+        <MessageBody chat_message={chat_message}/>
         
     </div>
     )
