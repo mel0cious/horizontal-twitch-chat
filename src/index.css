@@ -30,6 +30,10 @@
     flex-shrink: 0;
 }
 
+.pronouns {
+    margin-right: 10px;
+}
+
 .message-header-container {
     white-space: nowrap;
     overflow: hidden;
