@@ -9,8 +9,15 @@ interface BadgesProps {
 }
 
 export default function Badges({chat_message, badges} : BadgesProps) {
-    const badgesNotPassedDown = chat_message.msg.userInfo.badges
-    const badgeInfo = chat_message.msg.userInfo.badgeInfo
+
+
+    const userBadges = chat_message.msg.userInfo.badges
+    const userBadgeInfo = chat_message.msg.userInfo.badgeInfo
+
+    console.log("Passed down badges")
+    console.log(badges)
+    console.log("User Badges")
+    console.log(userBadges)
 
     useEffect(() => {
 
