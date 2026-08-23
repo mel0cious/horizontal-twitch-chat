@@ -1,3 +1,6 @@
+import type { HelixChatBadgeSet } from "@twurple/api"
+import { TWITCH_API } from "./auth"
+
 export function getDefaultUserColor(sp : URLSearchParams) : string {
     const hexRegex = /#[0-9A-Fa-f]{6}/ // regular expression to make sure it's in the right format
     const defaultColor = sp.get("DefaultUserColor") 
@@ -29,4 +32,13 @@ export function getChannel(sp : URLSearchParams) : string {
 export function getDefaultFont(sp: URLSearchParams) : string {
 
     return sp.get("Font") ?? "Roobert"
+}
+
+export async function getAllBadges(channelID: string) : Promise<HelixChatBadgeSet[]> {
+    const globalBadges = await TWITCH_API.chat.getGlobalBadges()
+    const channelBadges = await TWITCH_API.chat.getChannelBadges(channelID)
+
+    const returnArray = globalBadges.concat(channelBadges)
+    return returnArray
+
 }

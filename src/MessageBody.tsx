@@ -1,4 +1,4 @@
-import { buildEmoteImageUrl, parseChatMessage, parseEmoteOffsets, type ParsedMessagePart } from "@twurple/chat";
+import { buildEmoteImageUrl, parseChatMessage, type ParsedMessagePart } from "@twurple/chat";
 import type { CompressedChatMessage } from "./App";
 import { emoteParser } from "./auth";
 //import DOMPurify from 'dompurify';
@@ -22,7 +22,7 @@ function sanitize(string:any) : any {
       "/": '&#x2F;',
   };
   const reg = /[&<>"'/]/ig;
-  return string.replace(reg, (match:any)=>(map[match]));
+  return string.replace(reg, (match:any)=>(map[match])); // this line throws an error in my IDE for typescript, but it works. I don't know how to get rid of this error tho.
 }
 
 function getAllTwitchEmotes(parsedMessageParts: ParsedMessagePart[]) : string {
@@ -55,8 +55,7 @@ export default function MessageBody({chat_message} : MessageBodyProps) {
     const parsedAllEmotes = emoteParser.parse(parsedFirstParty);
 
     return (
-        // Dangerously Set Inner HTML, rarely should be used, but it works. I tried to execute a XSS attack but I couldn't. Maybe it's still possible, but I can't think of a better way.
-        // I was able to successfully execute a XSS attack on this. TODO: Update this
+        // Dangerously set Inner HTML. Fixed XSS attacks by parsing chat messages
         <div dangerouslySetInnerHTML={{__html: parsedAllEmotes}} className="message-body"> 
             
         </div>

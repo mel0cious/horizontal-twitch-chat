@@ -4,9 +4,10 @@ import { useSearchParams } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
-import { getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
+import { getAllBadges, getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
 import { emoteFetcher, TWITCH_API } from "./auth";
 import { clientId } from "./creds";
+import type { HelixChatBadgeSet } from "@twurple/api";
 export type CompressedChatMessage = {
   channel: string,
   user: string,
@@ -24,6 +25,7 @@ function App() {
   const MAIN_CHAT_CLIENT = getNewChatClient(channel)
   const channelRef = useRef<string>("")
   const lastTypedUserIDRef = useRef<string>("") // used to get all the emote sets that somebody can use off twitch
+  const allBadges = useRef<HelixChatBadgeSet[]>([])
 
   // I hate that this is required for some reason, it really feels like it shouldn't be and I was clever but nope for some bullshit reason it is
   useEffect(() => {
@@ -44,28 +46,35 @@ function App() {
   }
 
   // Fetch Third Party Emotes, NOT TWITCH EMOTES FROM THIS
-  // Inefficient right now, there must be a better way to do this.
+  // This useEffect is also going to fetch a badge list.
+  // While this library can fetch twitch emotes, it doesn't do so with all emotes, only channel and global emotes. 
+  // Hense, I am using this to fetch third party emotes (FFZ, BTTV, and 7TV)
   useEffect(() => {
         // Global Emotes
         emoteFetcher.fetchFFZEmotes()
-        emoteFetcher.fetchBTTVEmotes()
-        emoteFetcher.fetchSevenTVEmotes()
+    //    emoteFetcher.fetchBTTVEmotes()
+     //   emoteFetcher.fetchSevenTVEmotes()
 
         if (channelIDRef.current == 0) {}
         else {
           // Channel Emotes
-          // i need to see if there's a way to load someone's sub emotes
           emoteFetcher.fetchFFZEmotes(channelIDRef.current)
-          emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
-          emoteFetcher.fetchSevenTVEmotes(channelIDRef.current)
+     //     emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
+      //    emoteFetcher.fetchSevenTVEmotes(channelIDRef.current)
         }
-    }, [channelIDRef.current])
 
-  // twitch emote stuff, specifically to get somebody's sub emotes
-  useEffect(() => {
-    const userEmotes = TWITCH_API.chat.getUserEmotes(lastTypedUserIDRef.current)
-    console.log(userEmotes)
-  }, [lastTypedUserIDRef.current])
+        console.log(`Channel ID Ref: ${channelIDRef.current}, String: ${channelIDRef.current.toString()}`)
+        getAllBadges(channelIDRef.current.toString()).then((res)=>{
+          allBadges.current = res
+          console.log("Resolution: ")
+          console.log(res)
+          console.log("AllBadgesRef")
+          console.log(allBadges.current)
+        }).catch(()=> {
+          
+        })
+
+    }, [channelIDRef.current])
 
   // twitch chat client stuff
   // should this be a ref?
@@ -90,7 +99,6 @@ function App() {
   if (!check_for_channel()) return (
   <>
   Add A Channel In The URL Using the ?Channel=[YOUR_CHANNEL_NAME]
-  <a href={`https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=http://localhost:5173&scope=user%3Aread%3Aemotes`} >Connect with Twitch</a>
   </>)
 
 
@@ -112,7 +120,7 @@ function App() {
           messageArray.map(
             (message, index) => {
               return (
-                <MessageFull chat_message={message} prev_message_from_same_chatter={checkedPrevUser.current[index]} key={index} search_params={searchParams}>
+                <MessageFull chat_message={message} prev_message_from_same_chatter={checkedPrevUser.current[index]} key={index} search_params={searchParams} badges={allBadges}>
 
                 </MessageFull>
               )
