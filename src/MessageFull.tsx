@@ -1,7 +1,6 @@
 import type { CompressedChatMessage } from "./App";
 import MessageHeader from "./MessageHeader";
 import MessageBody from "./MessageBody";
-import Pronouns from "./Pronouns";
 
 
 interface MessageProps {

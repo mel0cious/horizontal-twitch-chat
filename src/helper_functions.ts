@@ -5,6 +5,10 @@ export function getDefaultUserColor(sp : URLSearchParams) : string {
     else return "#dd0f0f" // this color works the best for my stream, so that's what we're using. set this properly if that's an issue
 }
 
+export function getUserAccessToken(sp: URLSearchParams) : string {
+    return sp.get("access_token") ?? "NONE"
+}
+
 export function getDefaultFontColor(sp : URLSearchParams) : string {
     const hexRegex = /[0-9A-Fa-f]{6}/ // regular expression to make sure it's in the right format
     const defaultColor = sp.get("DefaultFontColor") 

@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
 import { getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
-import { emoteFetcher } from "./auth";
+import { emoteFetcher, TWITCH_API } from "./auth";
+import { clientId } from "./creds";
 export type CompressedChatMessage = {
   channel: string,
   user: string,
@@ -22,6 +23,7 @@ function App() {
   const channelIDRef = useRef<number>(0)
   const MAIN_CHAT_CLIENT = getNewChatClient(channel)
   const channelRef = useRef<string>("")
+  const lastTypedUserIDRef = useRef<string>("") // used to get all the emote sets that somebody can use off twitch
 
   // I hate that this is required for some reason, it really feels like it shouldn't be and I was clever but nope for some bullshit reason it is
   useEffect(() => {
@@ -41,11 +43,10 @@ function App() {
     return user == last.user
   }
 
-  // Fetch Emotes
+  // Fetch Third Party Emotes, NOT TWITCH EMOTES FROM THIS
   // Inefficient right now, there must be a better way to do this.
   useEffect(() => {
         // Global Emotes
-        emoteFetcher.fetchTwitchEmotes()
         emoteFetcher.fetchFFZEmotes()
         emoteFetcher.fetchBTTVEmotes()
         emoteFetcher.fetchSevenTVEmotes()
@@ -54,12 +55,17 @@ function App() {
         else {
           // Channel Emotes
           // i need to see if there's a way to load someone's sub emotes
-          emoteFetcher.fetchTwitchEmotes(channelIDRef.current)
           emoteFetcher.fetchFFZEmotes(channelIDRef.current)
           emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
           emoteFetcher.fetchSevenTVEmotes(channelIDRef.current)
         }
     }, [channelIDRef.current])
+
+  // twitch emote stuff, specifically to get somebody's sub emotes
+  useEffect(() => {
+    const userEmotes = TWITCH_API.chat.getUserEmotes(lastTypedUserIDRef.current)
+    console.log(userEmotes)
+  }, [lastTypedUserIDRef.current])
 
   // twitch chat client stuff
   // should this be a ref?
@@ -72,6 +78,8 @@ function App() {
       const channelID = parseInt(msg.channelId!)
       if (channelIDRef.current == channelID) {}
       else channelIDRef.current = channelID
+      lastTypedUserIDRef.current = cm.msg.userInfo.userId
+      console.log(`Chat User ID: ${lastTypedUserIDRef.current}`)
 
       checkedPrevUser.current.push(check_if_prev_same_usr(user))
       messageRefArray.current.push(cm)
@@ -79,7 +87,11 @@ function App() {
     })
   }, [channel])  
 
-  if (!check_for_channel()) return <>Add A Channel In The URL Using the ?Channel=[YOUR_CHANNEL_NAME]</>
+  if (!check_for_channel()) return (
+  <>
+  Add A Channel In The URL Using the ?Channel=[YOUR_CHANNEL_NAME]
+  <a href={`https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=http://localhost:5173&scope=user%3Aread%3Aemotes`} >Connect with Twitch</a>
+  </>)
 
 
   return (
