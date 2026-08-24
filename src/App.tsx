@@ -25,7 +25,7 @@ function App() {
   const MAIN_CHAT_CLIENT = getNewChatClient(channel)
   const channelRef = useRef<string>("")
   const lastTypedUserIDRef = useRef<string>("") // used to get all the emote sets that somebody can use off twitch
-  const allBadges = useRef<HelixChatBadgeSet[]>([])
+  const [allBadges, setAllBadges] = useState<HelixChatBadgeSet[]>([])
 
   // I hate that this is required for some reason, it really feels like it shouldn't be and I was clever but nope for some bullshit reason it is
   useEffect(() => {
@@ -52,24 +52,25 @@ function App() {
   useEffect(() => {
         // Global Emotes
         emoteFetcher.fetchFFZEmotes()
-    //    emoteFetcher.fetchBTTVEmotes()
-     //   emoteFetcher.fetchSevenTVEmotes()
+        emoteFetcher.fetchBTTVEmotes()
+        emoteFetcher.fetchSevenTVEmotes()
 
         if (channelIDRef.current == 0) {}
         else {
           // Channel Emotes
           emoteFetcher.fetchFFZEmotes(channelIDRef.current)
-     //     emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
-      //    emoteFetcher.fetchSevenTVEmotes(channelIDRef.current)
+          emoteFetcher.fetchBTTVEmotes(channelIDRef.current)
+          emoteFetcher.fetchSevenTVEmotes(channelIDRef.current)
         }
 
         console.log(`Channel ID Ref: ${channelIDRef.current}, String: ${channelIDRef.current.toString()}`)
         getAllBadges(channelIDRef.current.toString()).then((res)=>{
-          allBadges.current = res
           console.log("Resolution: ")
           console.log(res)
-          console.log("AllBadgesRef")
-          console.log(allBadges.current)
+          setAllBadges(res)
+          res.forEach(element => {
+            console.log(element)
+          });
         }).catch(()=> {
           
         })
@@ -111,6 +112,12 @@ function App() {
             fontSize: ${getDefaultFontSize(searchParams)}; 
             margin-right: 5px;
           }
+
+          .twitch-badge {
+            fontSize: ${getDefaultFontSize(searchParams)}; 
+            margin-right: 5px;
+          }
+            
         `}
       </style>
 

@@ -1,28 +1,11 @@
 import { buildEmoteImageUrl, parseChatMessage, type ParsedMessagePart } from "@twurple/chat";
 import type { CompressedChatMessage } from "./App";
 import { emoteParser } from "./auth";
-//import DOMPurify from 'dompurify';
+import { sanitize } from "./helper_functions";
+
 
 interface MessageBodyProps {
     chat_message: CompressedChatMessage
-}
-
-// For the function sanitize: modified slightly so my typescript intellisence would stop yelling at me.
-// Source - https://stackoverflow.com/a/48226843
-// Posted by SilentImp, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-08-22, License - CC BY-SA 4.0
-
-function sanitize(string:any) : any {
-  const map = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-      "/": '&#x2F;',
-  };
-  const reg = /[&<>"'/]/ig;
-  return string.replace(reg, (match:any)=>(map[match])); // this line throws an error in my IDE for typescript, but it works. I don't know how to get rid of this error tho.
 }
 
 function getAllTwitchEmotes(parsedMessageParts: ParsedMessagePart[]) : string {
