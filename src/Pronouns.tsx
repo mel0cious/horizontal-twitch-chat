@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react"
 
 interface PronounsProps {
     chat_user : string
@@ -56,7 +56,7 @@ export default function Pronouns({chat_user} : PronounsProps) {
             })
         }
     }
-    useEffect(() => {
+    useLayoutEffect(() => {
         fetchPronouns(chat_user)
     }, [])
 

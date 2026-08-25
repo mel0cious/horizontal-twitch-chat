@@ -28,7 +28,7 @@ export default function MessageHeader({chat_message, search_params, badges} : Me
         <>
         <div className="message-header-container" style={{color:userColor}}>
             <Pronouns chat_user={chat_message.user} /> 
-            <Badges chat_message={chat_message} badges={badges} />
+            {/*<Badges chat_message={chat_message} badges={badges} /> Commented out for now because feature is not working as intended*/}
             <div className="userName">{displayName}</div>:
         </div>
         </>

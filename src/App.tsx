@@ -1,7 +1,7 @@
 import { ChatMessage } from "@twurple/chat";
 import { getNewChatClient } from "./chat";
 import { useSearchParams } from "react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
 import { getAllBadges, getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
@@ -79,7 +79,7 @@ function App() {
 
   // twitch chat client stuff
   // should this be a ref?
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!channel || channel === "ERROR_NO_CHANNEL_SET") return;
     
     MAIN_CHAT_CLIENT.connect()
