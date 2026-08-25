@@ -1,7 +1,7 @@
 import { ChatMessage } from "@twurple/chat";
 import { getNewChatClient } from "./chat";
 import { useSearchParams } from "react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
 import { getAllBadges, getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
@@ -49,7 +49,7 @@ function App() {
   // This useEffect is also going to fetch a badge list.
   // While this library can fetch twitch emotes, it doesn't do so with all emotes, only channel and global emotes. 
   // Hense, I am using this to fetch third party emotes (FFZ, BTTV, and 7TV)
-  useEffect(() => {
+  useLayoutEffect(() => {
         // Global Emotes
         emoteFetcher.fetchFFZEmotes()
         emoteFetcher.fetchBTTVEmotes()
@@ -68,9 +68,6 @@ function App() {
           console.log("Resolution: ")
           console.log(res)
           setAllBadges(res)
-          res.forEach(element => {
-            console.log(element)
-          });
         }).catch(()=> {
           
         })
@@ -79,7 +76,7 @@ function App() {
 
   // twitch chat client stuff
   // should this be a ref?
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!channel || channel === "ERROR_NO_CHANNEL_SET") return;
     
     MAIN_CHAT_CLIENT.connect()

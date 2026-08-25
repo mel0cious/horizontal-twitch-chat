@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react"
 
 interface PronounsProps {
     chat_user : string
@@ -31,7 +31,11 @@ const pronounsDisplayDict: {[key: string]: string} = {
 function parsePronouns(pronouns : (PronounsAPI | null)) : (string | undefined | null) {
     if (pronouns === null) return null
     else {
-        if (!pronouns.alt_pronoun_id) return pronounsDisplayDict[pronouns.pronoun_id]
+        if (!pronouns.alt_pronoun_id) {
+            if (pronouns.pronoun_id == "other") return "Other"
+            else if (pronouns.pronoun_id == "any") return "Any"
+            return pronounsDisplayDict[pronouns.pronoun_id]
+        }
         
         const primaryPronouns = pronounsDisplayDict[pronouns.pronoun_id].split("/")
         const secondaryPronouns = pronounsDisplayDict[pronouns.alt_pronoun_id].split("/")
@@ -56,7 +60,7 @@ export default function Pronouns({chat_user} : PronounsProps) {
             })
         }
     }
-    useEffect(() => {
+    useLayoutEffect(() => {
         fetchPronouns(chat_user)
     }, [])
 
