@@ -2,7 +2,7 @@ import type { CompressedChatMessage } from "./App";
 import MessageHeader from "./MessageHeader";
 import MessageBody from "./MessageBody";
 import type { HelixChatBadgeSet } from "@twurple/api";
-import { useEffect, useState, type Ref } from "react";
+import { Activity, Suspense, useEffect, useState, type Ref } from "react";
 
 
 interface MessageProps {
@@ -13,9 +13,6 @@ interface MessageProps {
 }
 
 export default function MessageFull({chat_message, prev_message_from_same_chatter, search_params, badges} : MessageProps) {
-
-    const hasBadges = chat_message.msg.userInfo.badges.size > 0
-    const hasEmotes = chat_message.msg.emoteOffsets.size > 0
 
     const [isBadgesFullyLoaded, setIsBadgesFullyLoaded] = useState<boolean>(false)
     const [isEmotesFullyLoaded, setIsEmotesFullyLoaded] = useState<boolean>(false)
@@ -29,16 +26,15 @@ export default function MessageFull({chat_message, prev_message_from_same_chatte
     console.log(`IsEmotesFullyLoaded ${isEmotesFullyLoaded}`)
     return (
     <div className="message-container">
-        {
-            (isBadgesFullyLoaded && isEmotesFullyLoaded)
-            ? <> 
+            <Activity mode={(isBadgesFullyLoaded && isEmotesFullyLoaded) ? 'visible' : 'visible'}>
+                <Suspense fallback="">
             {(prev_message_from_same_chatter)
                 ? <>{/* I liked empty better */}</> 
-                : <MessageHeader chat_message={chat_message} search_params={search_params} badges={badges} setIsBadgesFullyLoaded={setIsBadgesFullyLoaded}/>}
+                : <MessageHeader chat_message={chat_message} search_params={search_params} badges={badges} setIsBadgesFullyLoaded={setIsBadgesFullyLoaded}/>
+            }
                 <MessageBody chat_message={chat_message} setIsEmotesFullyLoaded={setIsEmotesFullyLoaded}/> 
-            </>
-            : <></>
-        }
+                </Suspense>
+            </Activity>
     </div>
     )
 }
