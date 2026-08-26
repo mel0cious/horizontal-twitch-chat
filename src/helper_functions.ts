@@ -59,3 +59,9 @@ export function sanitize(string:any) {
   const reg = /[&<>"'/]/ig;
   return string.replace(reg, (match:any)=>(map[match])); // this line throws an error in my IDE for typescript, but it works. I don't know how to get rid of this error tho.
 }
+
+
+export function getBadgeString(badge : HelixChatBadgeSet) : string {
+        const baseVersion = badge.versions[0]
+        return baseVersion.getImageUrl(2)
+    }

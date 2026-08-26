@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router";
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
-import { getAllBadges, getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
+import { getAllBadges, getBadgeString, getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
 import { emoteFetcher, TWITCH_API } from "./auth";
 import { clientId } from "./creds";
 import type { HelixChatBadgeSet } from "@twurple/api";
@@ -26,6 +26,25 @@ function App() {
   const channelRef = useRef<string>("")
   const lastTypedUserIDRef = useRef<string>("") // used to get all the emote sets that somebody can use off twitch
   const [allBadges, setAllBadges] = useState<HelixChatBadgeSet[]>([])
+
+
+  useLayoutEffect(() => {
+    allBadges.forEach(badge => {
+      async function preloadImages() {
+        return new Promise<void>((res) => {
+          const imgURL = getBadgeString(badge)
+          let img = new Image()
+          img.onload = () => res()
+          img.onerror = () => res()
+          img.src=imgURL
+        })
+        
+      }      
+
+      preloadImages()
+    });
+
+  }, [allBadges])
 
   // I hate that this is required for some reason, it really feels like it shouldn't be and I was clever but nope for some bullshit reason it is
   useEffect(() => {
@@ -49,7 +68,7 @@ function App() {
   // This useEffect is also going to fetch a badge list.
   // While this library can fetch twitch emotes, it doesn't do so with all emotes, only channel and global emotes. 
   // Hense, I am using this to fetch third party emotes (FFZ, BTTV, and 7TV)
-  useEffect(() => {
+  useLayoutEffect(() => {
         // Global Emotes
         emoteFetcher.fetchFFZEmotes()
         emoteFetcher.fetchBTTVEmotes()
@@ -68,9 +87,6 @@ function App() {
           console.log("Resolution: ")
           console.log(res)
           setAllBadges(res)
-          res.forEach(element => {
-            console.log(element)
-          });
         }).catch(()=> {
           
         })

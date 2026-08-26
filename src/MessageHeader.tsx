@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { CompressedChatMessage } from "./App";
 import Badges from "./Badges";
 import { getDefaultUserColor } from "./helper_functions";
@@ -8,7 +8,8 @@ import type { HelixChatBadgeSet } from "@twurple/api";
 interface MessageHeaderProps {
     chat_message: CompressedChatMessage,
     search_params: URLSearchParams,
-    badges: Ref<HelixChatBadgeSet[]>
+    badges: HelixChatBadgeSet[],
+    setIsBadgesFullyLoaded: Dispatch<SetStateAction<boolean>>
 }
 
 function getUserColor(color : (string | undefined), search_params: URLSearchParams) {
@@ -16,7 +17,7 @@ function getUserColor(color : (string | undefined), search_params: URLSearchPara
     else return color
 }
 
-export default function MessageHeader({chat_message, search_params, badges} : MessageHeaderProps) {
+export default function MessageHeader({chat_message, search_params, badges, setIsBadgesFullyLoaded} : MessageHeaderProps) {
     const displayName = chat_message.msg.userInfo.displayName  
     const userColor = getUserColor(chat_message.msg.userInfo.color, search_params)
 
@@ -28,7 +29,7 @@ export default function MessageHeader({chat_message, search_params, badges} : Me
         <>
         <div className="message-header-container" style={{color:userColor}}>
             <Pronouns chat_user={chat_message.user} /> 
-            {/*<Badges chat_message={chat_message} badges={badges} /> Commented out for now because feature is not working as intended*/}
+            <Badges chat_message={chat_message} badges={badges} setIsBadgesFullyLoaded={setIsBadgesFullyLoaded}/>
             <div className="userName">{displayName}</div>:
         </div>
         </>
