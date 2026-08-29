@@ -8,13 +8,29 @@
     src: url(Roobert.otf);
 }
 
-.all-messages-container {
-    white-space: nowrap;
-    overflow: hidden;
+@keyframes EaseIn {
+    from {
+        transform: translateX(var(--slide-disatnce, 100px));
+    }    
+    to {
+        transform: translateX(0);
+    }
+}
+
+.all-messages-outer-container {
     width: 100%;
     min-height: 20px;
     display: flex;
+    position: fixed;
+}
+
+.all-messages-inner-container {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
     justify-content: flex-end;
+    display: flex;
+    overflow-x: auto;
 }
 
 .message-body {
@@ -28,6 +44,8 @@
     margin-right: 25px;
     align-self: flex-end;
     flex-shrink: 0;
+    height: 40px;
+    animation: EaseIn 2s ease-in;
 }
 
 .pronouns {

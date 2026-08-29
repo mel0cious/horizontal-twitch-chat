@@ -6,13 +6,14 @@ import { Activity, Suspense, useEffect, useState, type Ref } from "react";
 
 
 interface MessageProps {
+    ref: React.RefObject<HTMLDivElement | null> | undefined,
     chat_message: CompressedChatMessage,
     prev_message_from_same_chatter: Boolean,
     search_params: URLSearchParams,
     badges: HelixChatBadgeSet[]
 }
 
-export default function MessageFull({chat_message, prev_message_from_same_chatter, search_params, badges} : MessageProps) {
+export default function MessageFull({ref ,chat_message, prev_message_from_same_chatter, search_params, badges} : MessageProps) {
 
     const [isBadgesFullyLoaded, setIsBadgesFullyLoaded] = useState<boolean>(false)
     const [isEmotesFullyLoaded, setIsEmotesFullyLoaded] = useState<boolean>(false)
@@ -25,7 +26,7 @@ export default function MessageFull({chat_message, prev_message_from_same_chatte
     console.log(`IsBadgesFullyLoaded ${isBadgesFullyLoaded}`)
     console.log(`IsEmotesFullyLoaded ${isEmotesFullyLoaded}`)
     return (
-    <div className="message-container">
+    <div ref={ref} className="message-container">
             <Activity mode={(isBadgesFullyLoaded && isEmotesFullyLoaded) ? 'visible' : 'visible'}>
                 <Suspense fallback="">
             {(prev_message_from_same_chatter)

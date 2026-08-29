@@ -1,7 +1,7 @@
 import { ChatMessage } from "@twurple/chat";
 import { getNewChatClient } from "./chat";
 import { useSearchParams } from "react-router";
-import { useEffect, useRef, useState, useLayoutEffect } from "react";
+import { useEffect, useRef, useState, useLayoutEffect, type ReactElement } from "react";
 import MessageFull from "./MessageFull";
 import './index.css'
 import { getAllBadges, getBadgeString, getChannel, getDefaultFont, getDefaultFontColor, getDefaultFontSize } from "./helper_functions";
@@ -26,6 +26,7 @@ function App() {
   const channelRef = useRef<string>("")
   const lastTypedUserIDRef = useRef<string>("") // used to get all the emote sets that somebody can use off twitch
   const [allBadges, setAllBadges] = useState<HelixChatBadgeSet[]>([])
+  const lastMessageRef = useRef<HTMLDivElement>(null)
 
 
   useLayoutEffect(() => {
@@ -63,6 +64,30 @@ function App() {
     if (last === undefined) return false;
     return user == last.user
   }
+
+  useEffect(() => {
+
+
+
+    console.log(`In messageArray useEffect, ref=${lastMessageRef.current}`)
+    console.log(lastMessageRef.current)
+    console.log(lastMessageRef.current?.getBoundingClientRect())
+
+    if (lastMessageRef.current?.parentElement) {
+      const container = lastMessageRef.current.parentElement
+
+      setTimeout(() => {
+        console.log(lastMessageRef.current?.offsetWidth)
+        lastMessageRef.current?.style.setProperty(
+          '--slide-distance',
+          `1920px`
+        )
+        }, 1000)
+    }
+
+
+    
+  }, [messageArray])
 
   // Fetch Third Party Emotes, NOT TWITCH EMOTES FROM THIS
   // This useEffect is also going to fetch a badge list.
@@ -137,19 +162,22 @@ function App() {
         `}
       </style>
 
-      <div className="all-messages-container" style={{fontFamily: getDefaultFont(searchParams), color: getDefaultFontColor(searchParams), fontSize: getDefaultFontSize(searchParams)}}>
-        <b className="message-container">Connected to {channel}. </b>
-        {
-          messageArray.map(
-            (message, index) => {
-              return (
-                <MessageFull chat_message={message} prev_message_from_same_chatter={checkedPrevUser.current[index]} key={index} search_params={searchParams} badges={allBadges}>
+      <div className="all-messages-outer-container" style={{fontFamily: getDefaultFont(searchParams), color: getDefaultFontColor(searchParams), fontSize: getDefaultFontSize(searchParams)}}>
+        <div className="all-messages-inner-container">
+          <b className="message-container" key={Math.random()}>Connected to {channel}. </b>
+          {
+            messageArray.map(
+              (message, index) => {
+                const isLastMessage = (index == (messageArray.length-1))
+                return (
+                  <MessageFull ref={isLastMessage ? lastMessageRef : undefined} chat_message={message} prev_message_from_same_chatter={checkedPrevUser.current[index]} key={Math.random()} search_params={searchParams} badges={allBadges}>
 
-                </MessageFull>
-              )
-            }
-          )
-        }
+                  </MessageFull>
+                )
+              }
+            )
+          }
+        </div>
       </div>
     </>
   )
