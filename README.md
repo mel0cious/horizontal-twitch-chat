@@ -1,3 +1,5 @@
+# WIP CODE, KINDA WORKS BUT NOT FULLY FUNCTIONAL. OPEN SOURCED TO SHOW I'M WORKING ON IT, NO SUPPORT WILL BE GIVEN UNTIL THIS IS FULLY DONE
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
